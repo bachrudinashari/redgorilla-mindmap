@@ -190,22 +190,22 @@ g.leaf > rect.node { stroke-width: 1.4; fill: rgba(2,8,23,.85) !important; }
 
 
 /* HIERARCHY: 3 visually distinct levels */
-/* Level 1 - CATEGORY: Colored, bold, glowing */
-g.category > rect.node { stroke-width: 4 !important; filter: drop-shadow(0 0 12px var(--glow, #60a5fa)); }
-g.category > text.label { font-size: 17px !important; font-weight: 800 !important; }
+/* Level 1 - CATEGORY: Cyan, bold, glowing */
+g.category > rect.node { stroke: #22d3ee !important; stroke-width: 4 !important; fill: rgba(34,211,238,.06) !important; filter: drop-shadow(0 0 12px rgba(34,211,238,.5)); }
+g.category > text.label { font-size: 17px !important; font-weight: 800 !important; fill: #22d3ee !important; }
 
-/* Level 2 - SECTION: White/silver, clean, medium */
-g.section > rect.node { stroke: #94a3b8 !important; stroke-width: 2.2 !important; fill: rgba(148,163,184,.06) !important; }
-g.section > text.label { font-size: 13px !important; font-weight: 600 !important; fill: #f1f5f9 !important; }
+/* Level 2 - SECTION: Orange, medium */
+g.section > rect.node { stroke: #fb923c !important; stroke-width: 2.2 !important; fill: rgba(251,146,60,.05) !important; }
+g.section > text.label { font-size: 13px !important; font-weight: 600 !important; fill: #fdba74 !important; }
 
-/* Level 3 - LEAF: Warm gold/amber, small, subtle */
-g.leaf > rect.node { stroke: #fbbf24 !important; stroke-width: 1.4 !important; fill: rgba(251,191,36,.04) !important; }
-g.leaf > text.label { font-size: 11px !important; font-weight: 500 !important; fill: #fde68a !important; }
+/* Level 3 - LEAF: Pink, small */
+g.leaf > rect.node { stroke: #f472b6 !important; stroke-width: 1.4 !important; fill: rgba(244,114,182,.04) !important; }
+g.leaf > text.label { font-size: 11px !important; font-weight: 500 !important; fill: #f9a8d4 !important; }
 
 /* Links per level */
-.branch-link { stroke-width: 3.5 !important; opacity: 0.6 !important; }
-.section-link { stroke-width: 1.8 !important; opacity: 0.35 !important; stroke: #94a3b8 !important; }
-.leaf-link { stroke-width: 1 !important; opacity: 0.2 !important; stroke: #fbbf24 !important; }
+.branch-link { stroke-width: 3.5 !important; opacity: 0.6 !important; stroke: #22d3ee !important; }
+.section-link { stroke-width: 1.8 !important; opacity: 0.4 !important; stroke: #fb923c !important; }
+.leaf-link { stroke-width: 1 !important; opacity: 0.25 !important; stroke: #f472b6 !important; }
 
 /* Level colors - make hierarchy clear */
 g.category > text.label { font-size: 16px !important; font-weight: 700 !important; }
@@ -992,10 +992,10 @@ function render() {
   const deferredLeaves = [];
 
   for (const cat of state.categories) {
-    _createLinkFrag(linksFrag, { x: CENTER.x, y: CENTER.y, id: undefined }, cat, cat.color, "branch-link");
+    _createLinkFrag(linksFrag, { x: CENTER.x, y: CENTER.y, id: undefined }, cat, "#22d3ee", "branch-link");
     const totalLeaves = cat.sections.reduce((s, sec) => s + sec.leaves.length, 0);
     const dims = getBBoxDims(cat.name, "category");
-    const cg = makeRectNode(nodesFrag, cat.x, cat.y, dims.w, dims.h, "#0f1a2e", cat.color, "category", cat.name);
+    const cg = makeRectNode(nodesFrag, cat.x, cat.y, dims.w, dims.h, "rgba(34,211,238,.06)", "#22d3ee", "category", cat.name);
     cg.dataset.id = cat.id;
     state.map.set(cat.id, { data: cat, group: cg });
 
@@ -1010,9 +1010,9 @@ function render() {
 
     if (!cat.collapsed) {
       for (const sec of cat.sections) {
-        _createLinkFrag(linksFrag, cat, sec, "#94a3b8", "section-link");
+        _createLinkFrag(linksFrag, cat, sec, "#fb923c", "section-link");
         const sd = getBBoxDims(sec.name, "section");
-        const sg = makeRectNode(nodesFrag, sec.x, sec.y, sd.w, sd.h, "rgba(148,163,184,.06)", "#94a3b8", "section", sec.name);
+        const sg = makeRectNode(nodesFrag, sec.x, sec.y, sd.w, sd.h, "rgba(251,146,60,.05)", "#fb923c", "section", sec.name);
         sg.dataset.id = sec.id;
         sg.style.setProperty('--glow', cat.color);
         state.map.set(sec.id, { data: sec, group: sg });
@@ -1049,10 +1049,10 @@ function render() {
     const nFrag = document.createDocumentFragment();
     for (; idx < end; idx++) {
       const { sec, leaf, catColor } = deferredLeaves[idx];
-      _createLinkFrag(lFrag, sec, leaf, "#fbbf24", "leaf-link");
+      _createLinkFrag(lFrag, sec, leaf, "#f472b6", "leaf-link");
       const ld = getBBoxDims(leaf.name, "leaf");
       // Color based on command count: orange (few) / cyan (medium) / magenta (many)
-      const lg = makeRectNode(nFrag, leaf.x, leaf.y, ld.w, ld.h, "rgba(251,191,36,.04)", "#fbbf24", "leaf", leaf.name);
+      const lg = makeRectNode(nFrag, leaf.x, leaf.y, ld.w, ld.h, "rgba(244,114,182,.04)", "#f472b6", "leaf", leaf.name);
       lg.dataset.id = leaf.id;
       lg.style.setProperty('--glow', catColor);
       state.map.set(leaf.id, { data: leaf, group: lg });
