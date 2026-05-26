@@ -188,6 +188,14 @@ g.category > rect.node { stroke-width: 3.5; fill: rgba(15,26,46,.95) !important;
 g.section > rect.node { stroke-width: 2.2; fill: rgba(7,17,31,.9) !important; }
 g.leaf > rect.node { stroke-width: 1.4; fill: rgba(2,8,23,.85) !important; }
 
+
+/* Level-distinct colors */
+g.category > rect.node { stroke-width: 3.5 !important; }
+g.section > rect.node { stroke-width: 2.2 !important; stroke: #a78bfa !important; }
+g.leaf > rect.node { stroke-width: 1.4 !important; stroke: #4ade80 !important; }
+g.section > text.label { fill: #c4b5fd !important; }
+g.leaf > text.label { fill: #86efac !important; }
+
 /* Level colors - make hierarchy clear */
 g.category > text.label { font-size: 16px !important; font-weight: 700 !important; }
 g.section > text.label { font-size: 14px !important; font-weight: 600 !important; fill: #e2e8f0 !important; }
@@ -991,9 +999,10 @@ function render() {
 
     if (!cat.collapsed) {
       for (const sec of cat.sections) {
-        _createLinkFrag(linksFrag, cat, sec, cat.color, "section-link");
+        _createLinkFrag(linksFrag, cat, sec, "#a78bfa", "section-link");
         const sd = getBBoxDims(sec.name, "section");
-        const sg = makeRectNode(nodesFrag, sec.x, sec.y, sd.w, sd.h, cat.color + "12", cat.color, "section", sec.name);
+        const secColor = "#a78bfa"; // Purple for all sections (level 2)
+        const sg = makeRectNode(nodesFrag, sec.x, sec.y, sd.w, sd.h, secColor + "12", secColor, "section", sec.name);
         sg.dataset.id = sec.id;
         sg.style.setProperty('--glow', cat.color);
         state.map.set(sec.id, { data: sec, group: sg });
@@ -1033,9 +1042,10 @@ function render() {
       _createLinkFrag(lFrag, sec, leaf, "#475569", "leaf-link");
       const ld = getBBoxDims(leaf.name, "leaf");
       // Color based on command count: orange (few) / cyan (medium) / magenta (many)
-      const lg = makeRectNode(nFrag, leaf.x, leaf.y, ld.w, ld.h, "#0a1628", catColor, "leaf", leaf.name);
+      const leafLevelColor = "#4ade80"; // Green for all leaves (level 3)
+      const lg = makeRectNode(nFrag, leaf.x, leaf.y, ld.w, ld.h, "#0a1628", leafLevelColor, "leaf", leaf.name);
       lg.dataset.id = leaf.id;
-      lg.style.setProperty('--glow', catColor);
+      lg.style.setProperty('--glow', leafLevelColor);
       state.map.set(leaf.id, { data: leaf, group: lg });
     }
     linksLayer.appendChild(lFrag);
