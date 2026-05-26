@@ -1033,11 +1033,9 @@ function render() {
       _createLinkFrag(lFrag, sec, leaf, "#475569", "leaf-link");
       const ld = getBBoxDims(leaf.name, "leaf");
       // Color based on command count: orange (few) / cyan (medium) / magenta (many)
-      const cmdCount = getLeafCmdCount(leaf.name);
-      const leafColor = cmdCount <= 4 ? '#f59e0b' : cmdCount <= 7 ? '#06b6d4' : '#ec4899';
-      const lg = makeRectNode(nFrag, leaf.x, leaf.y, ld.w, ld.h, "#0a1628", leafColor, "leaf", leaf.name);
+      const lg = makeRectNode(nFrag, leaf.x, leaf.y, ld.w, ld.h, "#0a1628", catColor, "leaf", leaf.name);
       lg.dataset.id = leaf.id;
-      lg.style.setProperty('--glow', leafColor);
+      lg.style.setProperty('--glow', catColor);
       state.map.set(leaf.id, { data: leaf, group: lg });
     }
     linksLayer.appendChild(lFrag);
