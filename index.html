@@ -189,16 +189,23 @@ g.section > rect.node { stroke-width: 2.2; fill: rgba(7,17,31,.9) !important; }
 g.leaf > rect.node { stroke-width: 1.4; fill: rgba(2,8,23,.85) !important; }
 
 
-/* Level-distinct hierarchy - inherit parent color with decreasing intensity */
-g.category > rect.node { stroke-width: 4 !important; filter: drop-shadow(0 0 10px var(--glow, #60a5fa)); }
-g.section > rect.node { stroke-width: 2.2 !important; opacity: 0.85; }
-g.leaf > rect.node { stroke-width: 1.4 !important; opacity: 0.7; }
+/* HIERARCHY: 3 visually distinct levels */
+/* Level 1 - CATEGORY: Colored, bold, glowing */
+g.category > rect.node { stroke-width: 4 !important; filter: drop-shadow(0 0 12px var(--glow, #60a5fa)); }
 g.category > text.label { font-size: 17px !important; font-weight: 800 !important; }
-g.section > text.label { font-size: 13px !important; font-weight: 600 !important; fill: #e2e8f0 !important; }
-g.leaf > text.label { font-size: 11px !important; font-weight: 500 !important; fill: #cbd5e1 !important; }
-.branch-link { stroke-width: 3.5 !important; opacity: 0.65 !important; }
-.section-link { stroke-width: 2 !important; opacity: 0.4 !important; }
-.leaf-link { stroke-width: 1 !important; opacity: 0.25 !important; }
+
+/* Level 2 - SECTION: White/silver, clean, medium */
+g.section > rect.node { stroke: #94a3b8 !important; stroke-width: 2.2 !important; fill: rgba(148,163,184,.06) !important; }
+g.section > text.label { font-size: 13px !important; font-weight: 600 !important; fill: #f1f5f9 !important; }
+
+/* Level 3 - LEAF: Warm gold/amber, small, subtle */
+g.leaf > rect.node { stroke: #fbbf24 !important; stroke-width: 1.4 !important; fill: rgba(251,191,36,.04) !important; }
+g.leaf > text.label { font-size: 11px !important; font-weight: 500 !important; fill: #fde68a !important; }
+
+/* Links per level */
+.branch-link { stroke-width: 3.5 !important; opacity: 0.6 !important; }
+.section-link { stroke-width: 1.8 !important; opacity: 0.35 !important; stroke: #94a3b8 !important; }
+.leaf-link { stroke-width: 1 !important; opacity: 0.2 !important; stroke: #fbbf24 !important; }
 
 /* Level colors - make hierarchy clear */
 g.category > text.label { font-size: 16px !important; font-weight: 700 !important; }
@@ -1003,9 +1010,9 @@ function render() {
 
     if (!cat.collapsed) {
       for (const sec of cat.sections) {
-        _createLinkFrag(linksFrag, cat, sec, cat.color, "section-link");
+        _createLinkFrag(linksFrag, cat, sec, "#94a3b8", "section-link");
         const sd = getBBoxDims(sec.name, "section");
-        const sg = makeRectNode(nodesFrag, sec.x, sec.y, sd.w, sd.h, cat.color + "15", cat.color, "section", sec.name);
+        const sg = makeRectNode(nodesFrag, sec.x, sec.y, sd.w, sd.h, "rgba(148,163,184,.06)", "#94a3b8", "section", sec.name);
         sg.dataset.id = sec.id;
         sg.style.setProperty('--glow', cat.color);
         state.map.set(sec.id, { data: sec, group: sg });
@@ -1042,10 +1049,10 @@ function render() {
     const nFrag = document.createDocumentFragment();
     for (; idx < end; idx++) {
       const { sec, leaf, catColor } = deferredLeaves[idx];
-      _createLinkFrag(lFrag, sec, leaf, "#475569", "leaf-link");
+      _createLinkFrag(lFrag, sec, leaf, "#fbbf24", "leaf-link");
       const ld = getBBoxDims(leaf.name, "leaf");
       // Color based on command count: orange (few) / cyan (medium) / magenta (many)
-      const lg = makeRectNode(nFrag, leaf.x, leaf.y, ld.w, ld.h, catColor + "0a", catColor, "leaf", leaf.name);
+      const lg = makeRectNode(nFrag, leaf.x, leaf.y, ld.w, ld.h, "rgba(251,191,36,.04)", "#fbbf24", "leaf", leaf.name);
       lg.dataset.id = leaf.id;
       lg.style.setProperty('--glow', catColor);
       state.map.set(leaf.id, { data: leaf, group: lg });
